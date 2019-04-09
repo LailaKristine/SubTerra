@@ -1,11 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Spawn.h"
+#include "MyEnemy.h"
 
 // Sets default values
 ASpawn::ASpawn()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
@@ -14,7 +15,11 @@ ASpawn::ASpawn()
 void ASpawn::BeginPlay()
 {
 	Super::BeginPlay();
+	FVector myLocation = GetActorLocation();
+	GetWorld()->SpawnActor<AMyEnemy>(MyEnemy, myLocation , GetActorRotation());
+		
 	
+
 }
 
 // Called every frame
@@ -23,4 +28,3 @@ void ASpawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-

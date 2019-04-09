@@ -1,9 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyPawn.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Classes/Engine/LocalPlayer.h"
-#include "Engine/Classes/GameFramework/PlayerController.h"
+#include "MySaveGame.h"
 
 // Sets default values
 AMyPawn::AMyPawn()
@@ -14,7 +13,6 @@ AMyPawn::AMyPawn()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-	GetCharacterMovement()->bOrientRotationToMovement = false;
 
 }
 
@@ -39,7 +37,8 @@ void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	InputComponent->BindAxis("MoveForward", this, &AMyPawn::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &AMyPawn::MoveRight);
-
+	InputComponent->BindAction("Save", IE_Pressed, this, &AMyPawn::SaveGame);
+	InputComponent->BindAction("Load", IE_Pressed, this, &AMyPawn::LoadGame);
 	InputComponent->BindAction("Attack", IE_Pressed, this, &AMyPawn::Attack);
 }
 
@@ -66,6 +65,29 @@ void AMyPawn::takeDamage(int inDamage)
 	if (Health <= 0)
 		UE_LOG(LogTemp, Warning, TEXT("You are dead."));
 }
+void AMyPawn::SaveGame()
+{
+	//create instance of mysavegame class
+	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+
+	//set save game location to players location
+	SaveGameInstance->PlayerLocation = this->GetActorLocation();
+	//sjekk om det funker med actor location istedet for character siden vi bruker character
+
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"), 0);
+	//print message to show that the game saved
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Game Saved."));
+}
 
 
-
+void AMyPawn::LoadGame()
+{
+	//create instance of mysavegame class
+	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+	//Load the save game into savegameinstance variable
+	SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot", 0));
+	//Set the player position from the save game file
+	this->SetActorLocation(SaveGameInstance->PlayerLocation);
+	//print message to show that the game was loaded
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Game Loaded."));
+}

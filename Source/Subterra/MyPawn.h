@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Attack.h"
 #include "Engine/World.h"
+#include "Engine/DecalActor.h"
 #include "MyPawn.generated.h"
 
 UCLASS()
@@ -37,5 +38,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 		TSubclassOf<class AAttack> Attack_BP;
+
+private:
+
+	void SaveGame();
+	void LoadGame();
 
 };

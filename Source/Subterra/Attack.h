@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Enemy.h"
+#include "MyEnemy.h"
 #include "Engine/Classes/Components/BoxComponent.h"
 #include "Attack.generated.h"
 
